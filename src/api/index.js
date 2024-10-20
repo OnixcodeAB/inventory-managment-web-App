@@ -1,5 +1,6 @@
 import express from "express";
-import auth from "./auth/auth.routes.js";
+import authRoutes from "./auth/auth.routes.js";
+import equipmentRoutes from "./equipment/equipment.routes.js";
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ router.get("/", (req, res) => {
   });
 });
 
-router.use("/auth", auth);
+router.use("/auth", authRoutes);
+router.use("/equipmet", equipmentRoutes);
 
 export default router;
