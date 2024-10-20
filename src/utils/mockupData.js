@@ -1,0 +1,51 @@
+export const mockUsers = [
+  {
+    id: 1,
+    email: "john.doe@example.com",
+    password: "hashedpassword123",
+    role: "admin",
+    createdAt: "2024-10-01T10:00:00Z",
+    updatedAt: "2024-10-10T10:00:00Z",
+  },
+  {
+    id: 2,
+    email: "jane.smith@example.com",
+    password: "hashedpassword456",
+    role: "user",
+    createdAt: "2024-10-05T12:00:00Z",
+    updatedAt: "2024-10-15T12:00:00Z",
+  },
+];
+
+export const mockEquipment = [
+  {
+    id: 1,
+    marca: "BrandA",
+    modelo: "ModelX",
+    serial: "12345",
+    tipo_equipo: "Laptop",
+    caracteristicas: "16GB RAM, 512GB SSD",
+    software: "Windows 10",
+    nombre_equipo: "Office Laptop",
+    departamento_id: 1,
+    fecha_adquisicion: "2024-01-15T00:00:00Z",
+    estado: "active",
+    usuario_id: 1,
+    fecha_ultima_actividad: "2024-10-20T10:00:00Z",
+  },
+  {
+    id: 2,
+    marca: "BrandB",
+    modelo: "ModelY",
+    serial: "67890",
+    tipo_equipo: "Desktop",
+    caracteristicas: "32GB RAM, 1TB SSD",
+    software: "Ubuntu 20.04",
+    nombre_equipo: "Development PC",
+    departamento_id: 2,
+    fecha_adquisicion: "2023-06-10T00:00:00Z",
+    estado: "inactive",
+    usuario_id: 2,
+    fecha_ultima_actividad: "2024-09-15T10:00:00Z",
+  },
+];
