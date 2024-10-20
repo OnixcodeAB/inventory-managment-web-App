@@ -65,7 +65,7 @@ model RefreshToken {
   id          Int      @id @default(autoincrement()) // Primary key
   hashedToken String
   user_id     Int
-  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id])
   revoked     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
