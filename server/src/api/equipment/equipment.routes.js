@@ -27,4 +27,20 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Update equipment by user
+// URL to request update http://localhost:5000/equipment/?id=1&user=2
+router.put("/", async (params) => {
+  const { id, user } = req.query;
+
+  if (!id || !user) {
+    return res.status(200).json({error:"Missing id or user parameter"})
+  }
+  try {
+    console.log({id,user})
+    res.json({id,user})
+  } catch (error) {
+    res.status(500).json({error:"Failed to update equipment"})
+  }
+});
+
 export default router;
