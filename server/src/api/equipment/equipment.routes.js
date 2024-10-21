@@ -27,9 +27,21 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Create a new equipment
+router.post("/",async (req, res) => {
+  const equipmentData = req.body
+
+  try {
+    const newEquiment = await createEquipment(equipmentData)
+  } catch (error) {
+    
+  }
+
+})
+
 // Update equipment by user
 // URL to request update http://localhost:5000/equipment/?id=1&user=2
-router.put("/", async (params) => {
+router.put("/", async (req, res) => {
   const { id, user } = req.query;
 
   if (!id || !user) {
