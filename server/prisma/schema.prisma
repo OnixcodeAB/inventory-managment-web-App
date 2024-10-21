@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement()) // Primary key
+  email         String         @unique
+  password      String
+  refreshTokens RefreshToken[]
+  role          String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  equipment     Equipment[]
+  userHistories UserHistory[] // Reference to UserHistory records
+  AuditLog      AuditLog[]
+}
+
+model Equipment {
+  id                     Int           @id @default(autoincrement()) // Primary key
+  marca                  String
+  modelo                 String
+  serial                 String
+  tipo_equipo            String
+  caracteristicas        String
+  software               String
+  nombre_equipo          String
+  departamento_id        Int
+  departamento           Department    @relation(fields: [departamento_id], references: [id])
+  fecha_adquisicion      DateTime
+  estado                 String
+  usuario_id             Int? // Foreign key to the current User
+  usuario                User?         @relation(fields: [usuario_id], references: [id])
+  fecha_ultima_actividad DateTime
+  userHistories          UserHistory[] // Relationship to UserHistory table
+  AuditLog               AuditLog[]
+}
+
+model Department {
+  id        Int         @id @default(autoincrement()) // Primary key
+  name      String
+  location  String
+  equipment Equipment[]
+}
+
+model UserHistory {
+  id           Int       @id @default(autoincrement()) // Primary key
+  equipment_id Int // Foreign key to the Equipment
+  equipment    Equipment @relation(fields: [equipment_id], references: [id])
+  user_id      Int // Foreign key to the User
+  user         User      @relation(fields: [user_id], references: [id])
+  role         String // Role at the time of using this equipment
+  startDate    DateTime // Date when the user started using this equipment
+  endDate      DateTime? // Nullable: Date when the user stopped using this equipment
+}
+
+model RefreshToken {
+  id          Int      @id @default(autoincrement()) // Primary key
+  hashedToken String
+  user_id     Int
+  user        User     @relation(fields: [user_id], references: [id])
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id           Int       @id @default(autoincrement()) // Primary key
+  equipment_id Int // Foreign key to Equipment
+  equipment    Equipment @relation(fields: [equipment_id], references: [id])
+  user_id      Int // Foreign key to User (who made the change)
+  user         User      @relation(fields: [user_id], references: [id])
+  action       String // Action type: "CREATE", "UPDATE", "DELETE"
+  changes      String // Store changes as a string (JSON-like format)
+  timestamp    DateTime  @default(now()) // Automatically logs when the action occurred
+}
