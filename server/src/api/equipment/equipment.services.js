@@ -21,3 +21,15 @@ export async function createEquipment(equipmentData) {
     throw new Error("Equipment could not be created");
   }
 }
+
+async function updateEquipmentByIdAndUser(equipmentId, user) {
+  try {
+    // Obtener el equipo actual con el historial y usuario actual
+    const equipment = await db.equipment.findUnique({
+      where: {
+        id: parseInt(equipmentId),
+      },
+      include: { usuario: true, userHistories: true },
+    });
+  } catch (error) {}
+}
