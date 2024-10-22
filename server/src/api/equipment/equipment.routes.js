@@ -1,5 +1,9 @@
 import express from "express";
-import { getAllEquipment, getEquipmentById } from "./equipment.services.js";
+import {
+  createEquipment,
+  getAllEquipment,
+  getEquipmentById,
+} from "./equipment.services.js";
 
 const router = express.Router();
 
@@ -40,7 +44,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update equipment by user
-// URL to request update http://localhost:5000/equipment/?id=1&user=2
+// URL to request update http://localhost:5000/api/v1/equipmet/?id=1&user=2
 router.put("/", async (req, res) => {
   const { id, user } = req.query;
 
