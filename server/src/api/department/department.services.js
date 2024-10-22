@@ -43,3 +43,21 @@ export async function updateDepartment(id, name, location) {
     return error;
   }
 }
+
+export async function deleteDepartment(id) {
+  //Ensure the id is an integer
+  const parseId = parseInt(id);
+
+  try {
+    await db.department.delete({
+      where: {
+        id: parseId,
+      },
+    });
+
+    return { success: "department deleted" };
+  } catch (error) {
+    // console.log(error)
+    return error;
+  }
+}

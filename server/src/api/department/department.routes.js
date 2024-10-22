@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import {
   createDepartment,
+  deleteDepartment,
   getAllDepartments,
   getDepartmentById,
   updateDepartment,
@@ -33,14 +34,17 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create a new department
-router.post("/", async (req, res) => {
+router.post("/", async (req, res) => {ñ
   const departmentData = req.body;
   try {
     const newDepartment = await createDepartment(departmentData);
+    if (newDepartment?.code) {
+      throw newDepartment;
+    }
     res.status(200).json({ ...newDepartment });
   } catch (error) {
     // console.log(error);
-    return res.status(500).json({ error: "Failed to create department" });
+    return res.status(500).json({ error });
   }
 });
 
@@ -53,6 +57,22 @@ router.put("/", async (req, res) => {
       throw newDepartment;
     } else {
       res.status(200).json({ ...newDepartment });
+    }
+  } catch (error) {
+    /* console.log({ error }); */
+    res.status(500).json({ error });
+  }
+});
+
+// Delete department By Id
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const DeleteDepartment = await deleteDepartment(id);
+    if (DeleteDepartment.code) {
+      throw DeleteDepartment;
+    } else {
+      res.status(200).json({ message: "department deleted" });
     }
   } catch (error) {
     /* console.log({ error }); */
