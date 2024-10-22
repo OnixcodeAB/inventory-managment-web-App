@@ -9,3 +9,15 @@ export async function getDepartmentById(id) {
     where: { id: parseInt(id, 10) },
   });
 }
+
+export async function createDepartment(departmentData) {
+  try {
+    const newDepartment = await db.department.create({
+      data: departmentData,
+    });
+    return newDepartment;
+  } catch (error) {
+    // console.log("Failed to create the department", error);
+    throw new Error(`${error}`);
+  }
+}
