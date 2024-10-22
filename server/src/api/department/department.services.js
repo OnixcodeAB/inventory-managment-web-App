@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { db } from "../../utils/db.js";
 
 export async function getAllDepartments() {
@@ -19,5 +20,26 @@ export async function createDepartment(departmentData) {
   } catch (error) {
     // console.log("Failed to create the department", error);
     throw new Error(`${error}`);
+  }
+}
+
+export async function updateDepartment(id, name, location) {
+  //Ensure the id is an integer
+  const parseId = parseInt(id);
+  try {
+    // Proced to update the department
+    const departmentUpdated = await db.department.update({
+      where: {
+        id: parseId,
+      },
+      data: {
+        name,
+        location,
+      },
+    });
+
+    return departmentUpdated;
+  } catch (error) {
+    return error;
   }
 }

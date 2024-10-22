@@ -1,8 +1,9 @@
-import express from "express";
+import express, { json } from "express";
 import {
   createDepartment,
   getAllDepartments,
   getDepartmentById,
+  updateDepartment,
 } from "./department.services.js";
 
 const router = express.Router();
@@ -40,6 +41,22 @@ router.post("/", async (req, res) => {
   } catch (error) {
     // console.log(error);
     return res.status(500).json({ error: "Failed to create department" });
+  }
+});
+
+// Update department By Id
+router.put("/", async (req, res) => {
+  const { id, name, location } = req.body;
+  try {
+    const newDepartment = await updateDepartment(id, name, location);
+    if (newDepartment.code) {
+      throw newDepartment;
+    } else {
+      res.status(200).json({ ...newDepartment });
+    }
+  } catch (error) {
+    /* console.log({ error }); */
+    res.status(500).json({ error });
   }
 });
 
