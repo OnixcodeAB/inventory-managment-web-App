@@ -1,13 +1,21 @@
 import { db } from "../../utils/db.js";
 
 export async function getAllEquipment() {
-  return db.equipment.findMany();
+  try {
+    return db.equipment.findMany();
+  } catch (error) {
+    return error;
+  }
 }
 
 export async function getEquipmentById(id) {
-  return db.equipment.findUnique({
-    where: { id: parseInt(id, 10) },
-  });
+  try {
+    return db.equipment.findUnique({
+      where: { id: parseInt(id, 10) },
+    });
+  } catch (error) {
+    return error;
+  }
 }
 
 export async function createEquipment(equipmentData) {
@@ -17,8 +25,7 @@ export async function createEquipment(equipmentData) {
     });
     return newEquipment;
   } catch (error) {
-    console.log("Failed to create the equipment", error);
-    throw new Error("Equipment could not be created");
+    return error;
   }
 }
 
@@ -31,5 +38,7 @@ async function updateEquipmentByIdAndUser(equipmentId, user) {
       },
       include: { usuario: true, userHistories: true },
     });
-  } catch (error) {}
+  } catch (error) {
+    return error;
+  }
 }

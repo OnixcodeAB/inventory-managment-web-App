@@ -21,25 +21,28 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const equipment = await getEquipmentById(req.params.id);
-    if (equipment) {
-      res.json(equipment);
+    if (equipment?.code) {
+      throw equipment;
     } else {
-      res.status(404).json({ error: "Equipment not found" });
+      res.json(equipment);
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch equipment" });
+    res.status(500).json({ error });
   }
 });
 
 // Create a new equipment
 router.post("/", async (req, res) => {
   const equipmentData = req.body;
-
   try {
     const newEquiment = await createEquipment(equipmentData);
-    res.status(200).json(newEquiment);
+    if (newEquiment?.code) {
+      throw newEquiment;
+    } else {
+      res.status(200).json(newEquiment);
+    }
   } catch (error) {
-    res.status(500).json({ error: "Failed to create equipment" });
+    res.status(500).json({ error });
   }
 });
 
