@@ -1,14 +1,21 @@
-import { Prisma } from "@prisma/client";
 import { db } from "../../utils/db.js";
 
 export async function getAllDepartments() {
-  return db.department.findMany();
+  try {
+    return await db.department.findMany();
+  } catch (error) {
+    return error;
+  }
 }
 
 export async function getDepartmentById(id) {
-  return db.department.findUnique({
-    where: { id: parseInt(id, 10) },
-  });
+  try {
+    return await db.department.findUnique({
+      where: { id: parseInt(id, 10) },
+    });
+  } catch (error) {
+    return error;
+  }
 }
 
 export async function createDepartment(departmentData) {
@@ -19,7 +26,7 @@ export async function createDepartment(departmentData) {
     return newDepartment;
   } catch (error) {
     // console.log("Failed to create the department", error);
-    throw new Error(`${error}`);
+    return error;
   }
 }
 
