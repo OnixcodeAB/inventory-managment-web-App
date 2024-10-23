@@ -13,9 +13,13 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const departments = await getAllDepartments();
-    res.json(departments);
+    if (departments?.code) {
+      throw departments;
+    } else {
+      res.status(200).json(departments);
+    }
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch departments" });
+    res.status(500).json({ error });
   }
 });
 
@@ -34,7 +38,8 @@ router.get("/:id", async (req, res) => {
 });
 
 // Create a new department
-router.post("/", async (req, res) => {ñ
+router.post("/", async (req, res) => {
+  ñ;
   const departmentData = req.body;
   try {
     const newDepartment = await createDepartment(departmentData);
