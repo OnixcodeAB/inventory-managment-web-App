@@ -3,6 +3,7 @@ import {
   createEquipment,
   getAllEquipment,
   getEquipmentById,
+  updateEquipmentByIdAndUser,
 } from "./equipment.services.js";
 
 const router = express.Router();
@@ -55,10 +56,10 @@ router.put("/", async (req, res) => {
     return res.status(200).json({ error: "Missing id or user parameter" });
   }
   try {
-    console.log({ id, user });
-    res.json({ id, user });
+    const updatedEquipment = await updateEquipmentByIdAndUser(id, user);
+    res.json({ updatedEquipment });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update equipment" });
+    res.status(500).json({ error });
   }
 });
 

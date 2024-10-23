@@ -14,11 +14,10 @@ router.post("/register", async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    if (!email || !password) {
+    /*     if (!email || !password) {
       res.status(400);
       throw new Error("You must provide an email and a password");
-    }
-
+    } */
     const existingUser = await findUsersByEmail(email);
 
     if (existingUser) {
