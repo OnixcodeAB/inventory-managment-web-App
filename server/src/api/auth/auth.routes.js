@@ -12,6 +12,7 @@ const router = express.Router();
 router.post("/register", async (req, res, next) => {
   const newUser = req.body;
   try {
+    console.log(newUser);
     const existingUser = await findUsersByEmail(newUser?.email);
 
     if (existingUser) {
