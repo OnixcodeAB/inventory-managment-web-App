@@ -21,14 +21,18 @@ router.post("/register", async (req, res, next) => {
     }
 
     const user = await createUserByEmailAndPassword(newUser);
-    const jti = uuidv4();
-    const { accessToken, refreshToken } = generateTokens(user, jti);
-    await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.id });
+    if (user?.code) {
+      throw user;
+    } else {
+      const jti = uuidv4();
+      const { accessToken, refreshToken } = generateTokens(user, jti);
+      await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.id });
 
-    res.json({
-      accessToken,
-      refreshToken,
-    });
+      res.json({
+        accessToken,
+        refreshToken,
+      });
+    }
   } catch (error) {
     next(error);
   }

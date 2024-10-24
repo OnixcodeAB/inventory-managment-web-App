@@ -3,13 +3,17 @@ import { hashToken } from "../../utils/hashToken.js";
 
 // used when we create a refresh token
 export function addRefreshTokenToWhitelist({ jti, refreshToken, userId }) {
-  return db.refreshToken.create({
-    data: {
-      id: jti,
-      hashedToken: hashToken(refreshToken),
-      userId,
-    },
-  });
+  try {
+    return db.refreshToken.create({
+      data: {
+        id: jti,
+        hashedToken: hashToken(refreshToken),
+        user_id: userId,
+      },
+    });
+  } catch (error) {
+    return error;
+  }
 }
 
 // used to check if the token sent by the client is in the database
