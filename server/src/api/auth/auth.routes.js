@@ -10,22 +10,16 @@ import {
 const router = express.Router();
 
 router.post("/register", async (req, res, next) => {
+  const newUser = req.body;
   try {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    /*     if (!email || !password) {
-      res.status(400);
-      throw new Error("You must provide an email and a password");
-    } */
-    const existingUser = await findUsersByEmail(email);
+    const existingUser = await findUsersByEmail(newUser?.email);
 
     if (existingUser) {
       res.status(400);
       throw new Error("Email already in use");
     }
 
-    const user = await createUserByEmailAndPassword({ email, password });
+    const user = await createUserByEmailAndPassword(newUser);
     const jti = uuidv4();
     const { accessToken, refreshToken } = generateTokens(user, jti);
     await addRefreshTokenToWhitelist({ jti, refreshToken, userId: user.id });
