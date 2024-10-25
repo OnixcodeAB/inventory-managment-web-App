@@ -2,11 +2,11 @@ import bcrypt from "bcrypt";
 
 import { db } from "../../utils/db.js";
 
-export function findUsersByEmail(email) {
+export async function findUsersByEmail(email) {
   try {
-    return db.user.findUnique({
+    return await db.user.findUnique({
       where: {
-        email,
+        email: email,
       },
     });
   } catch (error) {
@@ -14,10 +14,10 @@ export function findUsersByEmail(email) {
   }
 }
 
-export function createUserByEmailAndPassword(user) {
+export async function createUserByEmailAndPassword(user) {
   user.password = bcrypt.hashSync(user.password, 12);
   try {
-    return db.user.create({
+    return await db.user.create({
       data: user,
     });
   } catch (error) {
@@ -25,10 +25,10 @@ export function createUserByEmailAndPassword(user) {
   }
 }
 
-export function findUserById(id) {
+export async function findUserById(id) {
   const idNum = parseInt(id);
   try {
-    return db.user.findUnique({
+    return await db.user.findUnique({
       where: {
         id: idNum,
       },

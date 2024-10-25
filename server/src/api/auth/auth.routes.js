@@ -12,12 +12,11 @@ const router = express.Router();
 router.post("/register", async (req, res, next) => {
   const newUser = req.body;
   try {
-    console.log(newUser);
+    //console.log(newUser);
     const existingUser = await findUsersByEmail(newUser?.email);
 
     if (existingUser) {
-      res.status(400);
-      throw new Error("Email already in use");
+      throw { error: "Email already in use" };
     }
 
     const user = await createUserByEmailAndPassword(newUser);
@@ -34,7 +33,8 @@ router.post("/register", async (req, res, next) => {
       });
     }
   } catch (error) {
-    next(error);
+    res.status(400).json({ ...error });
+    //next({ error });
   }
 });
 export default router;
