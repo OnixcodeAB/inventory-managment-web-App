@@ -1,12 +1,19 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateTokens } from "../../utils/jwt.js";
-import { addRefreshTokenToWhitelist } from "./auth.services.js";
+import {
+  addRefreshTokenToWhitelist,
+  deleteRefreshToke,
+  findRefreshTokenById,
+} from "./auth.services.js";
 import {
   createUserByEmailAndPassword,
+  findUserById,
   findUsersByEmail,
 } from "../users/users.services.js";
+import { hashToken } from "../../utils/hashToken.js";
 
 const router = express.Router();
 
@@ -70,4 +77,56 @@ router.post("/login", async (req, res) => {
     res.status(403).json(error);
   }
 });
+
+router.post("/refresh-token", async (req, res) => {
+  const { refreshToken } = req.body;
+
+  try {
+    // Verify the refresh token
+    const decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    console.log(decode);
+
+    // Hash the token to find it in the db
+    const hashedToken = hashToken(refreshToken);
+
+    // Find the refresh token in the db
+    const existingToken = await findRefreshTokenById(decode?.jti);
+
+    // Validate if refresh token and existingToken
+    if (hashedToken !== existingToken?.hashedToken) {
+      throw { error: "Unauthorized" };
+    }
+
+    // Find the user id in the db
+    const user = await findUserById(decode?.userId);
+    console.log(user);
+
+    if (!user) {
+      throw { error: "Unauthorized", user };
+    }
+
+    // if the Token is valid, delete it from the dn
+    await deleteRefreshToke(existingToken?.id);
+
+    //Generate new tokens
+    const jti = uuidv4();
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(
+      user,
+      jti
+    );
+
+    // Add the new frefresh token to the whitelist db
+    await addRefreshTokenToWhitelist({
+      jti,
+      refreshToken: newRefreshToken,
+      userId: user?.id,
+    });
+
+    // Send the new tokens to the whitelist
+    res.status(200).json({ accessToken, refreshToken: newRefreshToken });
+  } catch (error) {
+    res.status(403).json(error);
+  }
+});
+
 export default router;
