@@ -8,14 +8,16 @@ export function isAuthenticated(req, res, next) {
   }
 
   try {
-    console.log({ authorization });
+    //console.log({ authorization });
+
     const token = authorization.split(" ")[1];
-    console.log({ token });
+    //console.log({ token });
+
     const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
     req.payload = payload;
   } catch (error) {
     if (error?.name === "TokenExpiredError") {
-      throw { error: error.name };
+      return res.status(401).json({ error });
     }
     return res.status(401).json({ message: "🚫 Un-Authorized 🚫", error });
   }
