@@ -63,4 +63,19 @@ router.put("/", async (req, res) => {
   }
 });
 
+// Delete equipment by ID
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params.id;
+  const deleteEquipment = await deleteEquipmentById(id);
+  try {
+    if (deleteEquipment?.code) {
+      throw deleteEquipment;
+    } else {
+      res.status(200).json({ message: "Equipment deleted succesfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
 export default router;

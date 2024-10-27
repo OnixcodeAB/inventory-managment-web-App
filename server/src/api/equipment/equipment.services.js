@@ -95,3 +95,15 @@ export async function updateEquipmentByIdAndUser(equipmentId, newUser) {
     return error;
   }
 }
+
+export async function deleteEquipmentById(id) {
+  try {
+    const equipmentId = parseInt(id, 10);
+    const deleteEquipment = await db.equipment.delete({
+      where: { id: equipmentId },
+    });
+    return deleteEquipment;
+  } catch (error) {
+    return error;
+  }
+}
