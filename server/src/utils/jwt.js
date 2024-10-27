@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 // Usually  keep the token between 5 minutes - 15 minutes
 export function generateAccessToken(user) {
   return jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "15m",
   });
 }
 
