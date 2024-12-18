@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/auth", authRoutes);
-router.use("/equipmet", logAudit,equipmentRoutes);
+router.use("/equipment", logAudit,equipmentRoutes);
 router.use("/department", departmentRoutes);
 router.use("/users", usersRoutes);
 
