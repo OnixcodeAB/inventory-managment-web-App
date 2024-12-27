@@ -27,7 +27,7 @@ model Equipment {
   id                     Int           @id @default(autoincrement()) // Primary key
   marca                  String
   modelo                 String
-  serial                 String
+  serial                 String        @unique
   tipo_equipo            String
   caracteristicas        String
   software               String

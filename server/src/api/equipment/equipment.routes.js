@@ -4,6 +4,7 @@ import {
   getAllEquipment,
   getEquipmentById,
   updateEquipmentByIdAndUser,
+  checkEquipmentBySerial,
 } from "./equipment.services.js";
 import { logAudit } from "../../utils/logAudit.js";
 
@@ -37,6 +38,14 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const equipmentData = req.body;
   try {
+    const existingEquipment = await checkEquipmentBySerial(
+      equipmentData?.serial
+    );
+    if (existingEquipment) {
+      return res
+        .status(400)
+        .json({ error: "Equipment with this serial number already exists" });
+    }
     const newEquiment = await createEquipment(equipmentData);
     if (newEquiment?.code) {
       throw newEquiment;

@@ -18,6 +18,17 @@ export async function getEquipmentById(id) {
   }
 }
 
+export const checkEquipmentBySerial = async (serial) => {
+  try {
+    const equipment = await db.equipment.findUnique({
+      where: { serial },
+    });
+    return equipment;
+  } catch (error) {
+    return error;
+  }
+};
+
 export async function createEquipment(equipmentData) {
   try {
     const newEquipment = await db.equipment.create({
