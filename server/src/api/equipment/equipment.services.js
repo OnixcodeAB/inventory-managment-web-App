@@ -1,4 +1,5 @@
 import { db } from "../../utils/db.js";
+import { logAudit } from "../../utils/logAudit.js";
 
 export async function getAllEquipment() {
   try {
@@ -86,6 +87,7 @@ export async function updateEquipmentByIdAndUser(equipmentId, newUser) {
           usuario_id: userIdNum.id,
         },
       });
+      await logAudit(req, updatedEquipment);
 
       // Crear una nueva entrada en el historial para el nuevo usuario
       await db.userHistory.create({

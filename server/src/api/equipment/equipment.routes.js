@@ -83,7 +83,7 @@ router.delete("/:id", async (req, res) => {
     if (deleteEquipment?.code) {
       throw deleteEquipment;
     } else {
-      await logAudit(req, change);
+      await logAudit(req, deleteEquipment);
       res.status(200).json({ message: "Equipment deleted succesfully" });
     }
   } catch (error) {
