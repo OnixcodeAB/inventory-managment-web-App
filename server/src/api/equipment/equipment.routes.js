@@ -5,6 +5,7 @@ import {
   getEquipmentById,
   updateEquipmentByIdAndUser,
   checkEquipmentBySerial,
+  deleteEquipmentById,
 } from "./equipment.services.js";
 import { logAudit } from "../../utils/logAudit.js";
 

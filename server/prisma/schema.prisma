@@ -40,7 +40,6 @@ model Equipment {
   usuario                User?         @relation(fields: [usuario_id], references: [id])
   fecha_ultima_actividad DateTime
   userHistories          UserHistory[] // Relationship to UserHistory table
-  AuditLog               AuditLog[]
 }
 
 model Department {
@@ -72,12 +71,10 @@ model RefreshToken {
 }
 
 model AuditLog {
-  id           Int       @id @default(autoincrement()) // Primary key
-  equipment_id Int // Foreign key to Equipment
-  equipment    Equipment @relation(fields: [equipment_id], references: [id])
-  user_id      Int // Foreign key to User (who made the change)
-  user         User      @relation(fields: [user_id], references: [id])
-  action       String // Action type: "CREATE", "UPDATE", "DELETE"
-  changes      String // Store changes as a string (JSON-like format)
-  timestamp    DateTime  @default(now()) // Automatically logs when the action occurred
+  id        Int      @id @default(autoincrement()) // Primary key
+  user_id   Int // Foreign key to User (who made the change)
+  user      User     @relation(fields: [user_id], references: [id])
+  action    String // Action type: "CREATE", "UPDATE", "DELETE"
+  changes   String // Store changes as a string (JSON-like format)
+  timestamp DateTime @default(now()) // Automatically logs when the action occurred
 }
