@@ -49,10 +49,9 @@ router.post("/", async (req, res) => {
         .json({ error: "Equipment with this serial number already exists" });
     }
     const newEquiment = await createEquipment(equipmentData);
-    console.log(newEquiment);
     if (newEquiment instanceof PrismaClientValidationError) {
-      await logAudit(req, newEquiment?.cause);
-      throw newEquiment;
+      await logAudit(req, newEquiment.message);
+      throw newEquiment.message;
     } else {
       await logAudit(req);
       res.status(200).json(newEquiment);
