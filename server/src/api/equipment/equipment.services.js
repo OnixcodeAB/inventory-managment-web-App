@@ -41,7 +41,7 @@ export async function createEquipment(equipmentData) {
   }
 }
 
-export async function updateEquipmentByIdAndUser(equipmentId, newUser) {
+/* export async function updateEquipmentByIdAndUser(equipmentId, newUser) {
   const equimentIdNum = parseInt(equipmentId);
   const userIdNum = parseInt(newUser);
 
@@ -103,6 +103,68 @@ export async function updateEquipmentByIdAndUser(equipmentId, newUser) {
     }
     return {
       message: "No changes made, the user is already assigned to this equipment",
+    };
+  } catch (error) {
+    return error;
+  }
+}
+ */
+
+export async function updateEquipment(equipmentData) {
+  const equimentIdNum = parseInt(equipmentId);
+  const userIdNum = parseInt(newUser);
+
+  try {
+    // Obtener el equipo actual con el historial y usuario actual
+    const equipment = await db.equipment.findUnique({
+      where: {
+        id: equipmentData?.id,
+      },
+      include: { usuario: true, userHistories: true },
+    });
+
+    if (!equipment) {
+      return { error: "Equipment not found" };
+    }
+
+    // Validar si el equipo se esta asignado a un nuevo usuario
+    if (equipment.id !== equipmentData?.id) {
+      // Actualizar la fecha de finalizacion del usuario antiguo
+      if (equipment.id) {
+        await db.userHistory.updateMany({
+          where: {
+            equipment_id: equipmentData?.id,
+            endDate: null, // Encontrar el usuario actual
+          },
+          data: {
+            endDate: new Date(), // Marcar la fecha de fin
+          },
+        });
+      }
+
+      // Actualizar el equipo con la nuevo informacion
+      const updatedEquipment = await db.equipment.update({
+        where: { id: equipmentData?.id },
+        data: {
+          ...equipmentData,
+        },
+      });
+
+      // Crear una nueva entrada en el historial para el nuevo usuario
+      await db.userHistory.create({
+        data: {
+          equipment_id: equimentIdNum,
+          user_id: newUserRecord.id,
+          role: newUserRecord.role,
+          startDate: new Date(),
+        },
+      });
+
+      return { success: "Equipment updated", updatedEquipment };
+    }
+    return {
+      message:
+        "No changes made, the user is already assigned to this equipment",
     };
   } catch (error) {
     return error;

@@ -6,6 +6,7 @@ import {
   updateEquipmentByIdAndUser,
   checkEquipmentBySerial,
   deleteEquipmentById,
+  updateEquipment,
 } from "./equipment.services.js";
 import { logAudit } from "../../utils/logAudit.js";
 import { PrismaClientValidationError } from "@prisma/client/runtime/library";
@@ -26,8 +27,8 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const equipment = await getEquipmentById(req.params.id);
-    if (equipment?.code) {
-      throw equipment;
+    if (equipment instanceof PrismaClientValidationError) {
+      throw equipment.message;
     } else {
       res.json(equipment);
     }
@@ -77,9 +78,20 @@ router.put("/", async (req, res) => {
   }
 });
 
+// Update equipment
+router.put("/", async (req, res) => {
+  const equimentData = req.body;
+  try {
+    const updatedEquipment = await updateEquipment(equimentData);
+    res.json({ updatedEquipment });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
 // Delete equipment by ID
 router.delete("/:id", async (req, res) => {
-  const { id } = req.params.id;
+  const id = req.params.id;
   const deleteEquipment = await deleteEquipmentById(id);
   try {
     if (deleteEquipment instanceof PrismaClientValidationError) {
