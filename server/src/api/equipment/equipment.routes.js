@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
     if (newEquiment?.code) {
       throw newEquiment;
     } else {
-      await logAudit(req, newEquiment.id);
+      await logAudit(req);
       res.status(200).json(newEquiment);
     }
   } catch (error) {
@@ -83,6 +83,7 @@ router.delete("/:id", async (req, res) => {
     if (deleteEquipment?.code) {
       throw deleteEquipment;
     } else {
+      await logAudit(req);
       res.status(200).json({ message: "Equipment deleted succesfully" });
     }
   } catch (error) {

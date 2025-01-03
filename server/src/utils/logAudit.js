@@ -1,10 +1,9 @@
 import { db } from "./db.js";
 
-export async function logAudit(req, id) {
+export async function logAudit(req, change) {
   try {
     const { userId } = req.payload;
     const user_id = parseInt(userId, 10);
-    const equipment_id = parseInt(id, 10);
 
     let action;
 
@@ -19,15 +18,14 @@ export async function logAudit(req, id) {
     if (action) {
       await db.auditLog.create({
         data: {
-          equipment_id,
           user_id,
           action,
-          changes: JSON.stringify(req.body),
+          changes: JSON.stringify(change ? change : req.body),
         },
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(401).json({ error });
   }
 }
