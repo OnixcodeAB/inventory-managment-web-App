@@ -41,6 +41,14 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const departmentData = req.body;
   try {
+    const existingDepartment = await checkEquipmentBySerial(
+      departmentData?.name
+    );
+    if (existingDepartment) {
+      return res
+        .status(400)
+        .json({ error: "Department with this name already exists" });
+    }
     const newDepartment = await createDepartment(departmentData);
     if (newDepartment?.code) {
       throw newDepartment;

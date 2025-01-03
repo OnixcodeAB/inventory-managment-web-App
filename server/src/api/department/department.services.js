@@ -18,6 +18,17 @@ export async function getDepartmentById(id) {
   }
 }
 
+export const checkDepartmentByName = async (name) => {
+  try {
+    const department = await db.department.findFirst({
+      where: { name },
+    });
+    return department;
+  } catch (error) {
+    return error;
+  }
+};
+
 export async function createDepartment(departmentData) {
   try {
     const newDepartment = await db.department.create({
