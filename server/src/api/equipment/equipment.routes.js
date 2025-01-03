@@ -8,6 +8,7 @@ import {
   deleteEquipmentById,
 } from "./equipment.services.js";
 import { logAudit } from "../../utils/logAudit.js";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 
 const router = express.Router();
 
@@ -48,7 +49,9 @@ router.post("/", async (req, res) => {
         .json({ error: "Equipment with this serial number already exists" });
     }
     const newEquiment = await createEquipment(equipmentData);
-    if (newEquiment?.code) {
+    console.log(newEquiment);
+    if (newEquiment instanceof PrismaClientValidationError) {
+      await logAudit(req, newEquiment?.cause);
       throw newEquiment;
     } else {
       await logAudit(req);
