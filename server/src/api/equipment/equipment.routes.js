@@ -82,8 +82,9 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params.id;
   const deleteEquipment = await deleteEquipmentById(id);
   try {
-    if (deleteEquipment?.code) {
-      throw deleteEquipment;
+    if (deleteEquipment instanceof PrismaClientValidationError) {
+      await logAudit(req, deleteEquipment.message);
+      throw deleteEquipment.message;
     } else {
       await logAudit(req, deleteEquipment);
       res.status(200).json({ message: "Equipment deleted succesfully" });

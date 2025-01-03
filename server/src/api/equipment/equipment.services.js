@@ -102,7 +102,7 @@ export async function updateEquipmentByIdAndUser(equipmentId, newUser) {
       return { success: "Equipment updated", updatedEquipment };
     }
     return {
-      message: "No changes made, user is already assigned to this equipment",
+      message: "No changes made, the user is already assigned to this equipment",
     };
   } catch (error) {
     return error;
