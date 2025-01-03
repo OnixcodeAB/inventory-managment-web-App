@@ -129,6 +129,14 @@ export async function updateEquipment(equipmentData) {
 
     // Validar si el equipo se esta asignado a un nuevo usuario
     if (equipment.id !== equipmentData?.id) {
+      
+      // buscar la info del nuevo usuario
+      const newUserRecord = await db.user.findUnique({ where: { id: userId } });
+
+      if (!newUserRecord) {
+        return { error: "User not found" };
+      }
+
       // Actualizar la fecha de finalizacion del usuario antiguo
       if (equipment.id) {
         await db.userHistory.updateMany({
@@ -153,7 +161,7 @@ export async function updateEquipment(equipmentData) {
       // Crear una nueva entrada en el historial para el nuevo usuario
       await db.userHistory.create({
         data: {
-          equipment_id: equimentIdNum,
+          equipment_id: equipmentData.id,
           user_id: newUserRecord.id,
           role: newUserRecord.role,
           startDate: new Date(),
