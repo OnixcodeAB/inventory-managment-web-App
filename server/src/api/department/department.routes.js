@@ -1,5 +1,6 @@
 import express, { json } from "express";
 import {
+  checkDepartmentByName,
   createDepartment,
   deleteDepartment,
   getAllDepartments,
@@ -41,7 +42,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const departmentData = req.body;
   try {
-    const existingDepartment = await checkEquipmentBySerial(
+    const existingDepartment = await checkDepartmentByName(
       departmentData?.name
     );
     if (existingDepartment) {

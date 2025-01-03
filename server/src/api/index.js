@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRoutes);
 router.use("/equipment", isAuthenticated,equipmentRoutes);
-router.use("/department", departmentRoutes);
+router.use("/department", isAuthenticated,departmentRoutes);
 router.use("/users", usersRoutes);
 
 export default router;
