@@ -61,23 +61,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update equipment by user
-// URL to request update http://localhost:5000/api/v1/equipmet/?id=1&user=2
-/* router.put("/", async (req, res) => {
-  const { id, user } = req.query;
-
-  if (!id || !user) {
-    return res.status(200).json({ error: "Missing id or user parameter" });
-  }
-  try {
-    const updatedEquipment = await updateEquipmentByIdAndUser(id, user);
-    res.json({ updatedEquipment });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-}); */
-
-// Update equipment
+// Update equipment 
 router.put("/", async (req, res) => {
   const equimentData = req.body;
   try {
