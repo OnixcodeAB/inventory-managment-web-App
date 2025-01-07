@@ -111,9 +111,6 @@ export async function createEquipment(equipmentData) {
  */
 
 export async function updateEquipment(equipmentData) {
-  const equimentIdNum = parseInt(equipmentId);
-  const userIdNum = parseInt(newUser);
-
   try {
     // Obtener el equipo actual con el historial y usuario actual
     const equipment = await db.equipment.findUnique({
@@ -127,53 +124,80 @@ export async function updateEquipment(equipmentData) {
       return { error: "Equipment not found" };
     }
 
-    // Validar si el equipo se esta asignado a un nuevo usuario
-    if (equipment.id !== equipmentData?.id) {
-      
-      // buscar la info del nuevo usuario
-      const newUserRecord = await db.user.findUnique({ where: { id: userId } });
+    // Validar si el equipo se esta asignado al mismo usuario
+    const currentUser = equipment?.usuario_id;
+    const newUser = equipmentData?.usuario_id;
 
-      if (!newUserRecord) {
-        return { error: "User not found" };
-      }
-
-      // Actualizar la fecha de finalizacion del usuario antiguo
-      if (equipment.id) {
-        await db.userHistory.updateMany({
-          where: {
-            equipment_id: equipmentData?.id,
-            endDate: null, // Encontrar el usuario actual
-          },
-          data: {
-            endDate: new Date(), // Marcar la fecha de fin
-          },
-        });
-      }
-
-      // Actualizar el equipo con la nuevo informacion
+    if (currentUser === newUser) {
+      console.log(equipmentData);
       const updatedEquipment = await db.equipment.update({
-        where: { id: equipmentData?.id },
+        where: { id: equipment.id },
         data: {
-          ...equipmentData,
+          marca: equipmentData.marca,
+          modelo: equipmentData.modelo,
+          serial: equipmentData.serial,
+          tipo_equipo: equipmentData.tipo_equipo,
+          caracteristicas: equipmentData.caracteristicas,
+          software: equipmentData.software,
+          nombre_equipo: equipmentData.nombre_equipo,
+          departamento_id: equipmentData.departamento_id,
+          departamento: equipmentData.departamento,
+          fecha_adquisicion: equipmentData.fecha_adquisicion,
+          estado: equipmentData.estado,
+          usuario_id: equipmentData.usuario_id,
+          usuario: equipmentData.usuario,
+          fecha_ultima_actividad: equipmentData.fecha_ultima_actividad,
         },
       });
-
-      // Crear una nueva entrada en el historial para el nuevo usuario
-      await db.userHistory.create({
-        data: {
-          equipment_id: equipmentData.id,
-          user_id: newUserRecord.id,
-          role: newUserRecord.role,
-          startDate: new Date(),
-        },
-      });
-
       return { success: "Equipment updated", updatedEquipment };
     }
-    return {
-      message:
-        "No changes made, the user is already assigned to this equipment",
-    };
+
+    // Si el equipo está asignado a un usuario diferente, buscar la info del nuevo usuario
+    const newUserRecord = await db.user.findUnique({ where: { id: newUser } });
+
+    console.log(newUserRecord);
+
+    if (!newUserRecord) {
+      return { error: "User not found" };
+    }
+    // Hallar y Actualizar la fecha de finalizacion del usuario antiguo
+    const oldUserHistoryRecord = await db.userHistory.findFirst({
+      where: {
+        equipment_id: equipment.id,
+        endDate: null,
+      },
+    });
+    if (oldUserHistoryRecord) {
+      await db.userHistory.update({
+        where: {
+          equipment_id: equipment.id,
+          endDate: null, // Encontrar el usuario actual
+        },
+        data: {
+          endDate: new Date(), // Marcar la fecha de fin
+        },
+      });
+    }
+
+    // Actualizar el equipo con la nueva informacion
+    const updatedEquipment = await db.equipment.updateMany({
+      where: { id: equipmentData?.id },
+      data: {
+        ...equipmentData,
+      },
+    });
+
+    // Crear una nueva entrada en el historial para el nuevo usuario
+    await db.userHistory.create({
+      data: {
+        equipment_id: equipmentData.id,
+        user_id: newUserRecord.id,
+        role: newUserRecord.role,
+        startDate: new Date(),
+      },
+    });
+
+    return { success: "Equipment updated", updatedEquipment };
   } catch (error) {
     return error;
   }
@@ -185,6 +209,7 @@ export async function deleteEquipmentById(id) {
     const deleteEquipment = await db.equipment.delete({
       where: { id: equipmentId },
     });
+
     return deleteEquipment;
   } catch (error) {
     return error;

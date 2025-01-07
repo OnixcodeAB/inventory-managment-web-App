@@ -3,7 +3,6 @@ import {
   createEquipment,
   getAllEquipment,
   getEquipmentById,
-  updateEquipmentByIdAndUser,
   checkEquipmentBySerial,
   deleteEquipmentById,
   updateEquipment,
@@ -64,7 +63,7 @@ router.post("/", async (req, res) => {
 
 // Update equipment by user
 // URL to request update http://localhost:5000/api/v1/equipmet/?id=1&user=2
-router.put("/", async (req, res) => {
+/* router.put("/", async (req, res) => {
   const { id, user } = req.query;
 
   if (!id || !user) {
@@ -76,14 +75,19 @@ router.put("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error });
   }
-});
+}); */
 
 // Update equipment
 router.put("/", async (req, res) => {
   const equimentData = req.body;
   try {
     const updatedEquipment = await updateEquipment(equimentData);
-    res.json({ updatedEquipment });
+    if (updatedEquipment instanceof PrismaClientValidationError) {
+      await logAudit(updatedEquipment.stack);
+      throw updatedEquipment.message;
+    }
+    logAudit(updatedEquipment);
+    res.json({ ...updatedEquipment });
   } catch (error) {
     res.status(500).json({ error });
   }
